@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-@objc (FoodTracker)
+@objc (USDAItem)
 class USDAItem: NSManagedObject {
 
     @NSManaged var calcium: String
@@ -17,11 +17,11 @@ class USDAItem: NSManagedObject {
     @NSManaged var cholesterol: String
     @NSManaged var dateAdded: NSDate
     @NSManaged var energy: String
+    @NSManaged var fatTotal: String
     @NSManaged var idValue: String
     @NSManaged var name: String
     @NSManaged var protein: String
     @NSManaged var sugar: String
     @NSManaged var vitamiC: String
-    @NSManaged var fatTotal: String
 
 }

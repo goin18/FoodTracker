@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import CoreData
 
+let kUSDAItemCompleted = "USDAItemInstanceComplete"
 class DataController {
 
     class func jsonAsUSDAIdAndNameSearchResults(json : NSDictionary) -> [(name:String, idValue:String)] {
@@ -44,7 +45,8 @@ class DataController {
             
             for itemDictionary in results {
                 if itemDictionary["_id"] != nil && itemDictionary["_id"] as String == idValue {
-                    let managedObjectConext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+                    let appDelegate = (UIApplication.sharedApplication().delegate as AppDelegate)
+                    let managedObjectContext = appDelegate.managedObjectContext 
                     var requestForUSDAItem = NSFetchRequest(entityName: "USDAItem")
                     let itemDictionaryId = itemDictionary["_id"]! as String
                     
@@ -53,7 +55,7 @@ class DataController {
                     
                     var error: NSError?
                     
-                    var items = managedObjectConext?.executeFetchRequest(requestForUSDAItem, error: &error)
+                    var items = managedObjectContext?.executeFetchRequest(requestForUSDAItem, error: &error)
                     
                     if items?.count != 0 {
                         //item is already saved
@@ -61,8 +63,9 @@ class DataController {
                         return
                     }else {
                         println("Lets save this to CoreData")
-                        let entityDescription = NSEntityDescription.entityForName("USDAItem", inManagedObjectContext: managedObjectConext!)
-                        let usdaItem = USDAItem(entity:entityDescription!, insertIntoManagedObjectContext: managedObjectConext!)
+                        let entityDescription = NSEntityDescription.entityForName("USDAItem", inManagedObjectContext: managedObjectContext!)
+                        let usdaItem = USDAItem(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext!)
+                        
                         usdaItem.idValue = itemDictionary["_id"]! as String
                         usdaItem.dateAdded = NSDate()
                         
@@ -154,8 +157,12 @@ class DataController {
                                 }
                                 
                                 (UIApplication.sharedApplication().delegate as AppDelegate).saveContext()
+
+                                NSNotificationCenter.defaultCenter().postNotificationName(kUSDAItemCompleted, object: usdaItem)
+                               
                                 
                             }
+                            
                             
                         }
                     }
