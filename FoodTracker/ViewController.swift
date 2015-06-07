@@ -20,11 +20,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     var suggestedSearchFoods:[String] = []
     var filteredSuggestedSearchFoods:[String] = []
+   // var favoritedUSDAItem:[String] = []
     
     var apiSearchForFoods:[(name: String, idValue: String)] = []
     
-    var favoritedUSDAItem:[USDAItem] = []
+    var table:[USDAItem] = []
     var filteredFavoritedUSDAItems:[USDAItem] = []
+    var favoritedUSDAItem:[USDAItem] = []
     
     var scopeButtonTitles = ["Reccommended", "Search Results", "Saved"]
     
@@ -63,7 +65,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "toDetailVCSegue" {
             if sender != nil {
-                var detailVC = segue.destinationViewController as DetailViewController
+                var detailVC = segue.destinationViewController as! DetailViewController
                 detailVC.usdaItem = sender as? USDAItem
             }
         }
@@ -96,7 +98,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! UITableViewCell
         
         var foodName:String
         
@@ -200,10 +202,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func makeRequest(searchString: String) {
-
+//https://api.nutritionix.com/v1_1/search/
         //HTTP Get Request
         /*
-        let url = NSURL(string: "https://api.nutritionix.com/v1_1/search/\(searchString)?results=0%3A5&cal_min=0&cal_max=50000&fields=item_name%2Cbrand_name%2Citem_id%2Cbrand_id&appId=\(kAppId)&appKey=\(kAppKey)")
+        let url = NSURL(string: "\(searchString)?results=0%3A5&cal_min=0&cal_max=50000&fields=item_name%2Cbrand_name%2Citem_id%2Cbrand_id&appId=\(kAppId)&appKey=\(kAppKey)")
         let task = NSURLSession.sharedSession().dataTaskWithURL(url!, completionHandler: { (data, response, error) -> Void in
             var stringData = NSString(data: data, encoding: NSUTF8StringEncoding)
             
@@ -267,10 +269,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func requestFavoriteUSDAItems() {
         let fetchRequest = NSFetchRequest(entityName: "USDAItem")
-        let appDelegate = (UIApplication.sharedApplication().delegate as AppDelegate)
+        let appDelegate = (UIApplication.sharedApplication().delegate as! AppDelegate)
         let managedObjectContext = appDelegate.managedObjectContext
         
-        self.favoritedUSDAItem = managedObjectContext?.executeFetchRequest(fetchRequest, error: nil) as [USDAItem]
+        self.favoritedUSDAItem = managedObjectContext?.executeFetchRequest(fetchRequest, error: nil) as! [USDAItem]
     }
     
     // NSNotificationCenter
